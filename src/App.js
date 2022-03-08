@@ -2,8 +2,11 @@ import './App.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Home from './pages/Home'
+import ProtectedRoute from "./pages/ProtectedRoute"
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from "@mui/material";
+import { UserAuthContextProvider } from "./context/UserAuthContext";
 
 function App() {
 
@@ -27,13 +30,13 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Router>
+      <UserAuthContextProvider>
         <Routes>
-          <Route path="/" element={<App />}/>
-          <Route path="/login" element={<Login />}/>
-          <Route path="/register" element={<Register />}/>
+          <Route path='/' element={<Login />}/>
+          <Route path='/register' element={<Register />}/>
+          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>}/>
         </Routes>
-      </Router>
+      </UserAuthContextProvider>
     </ThemeProvider>
   );
 }
