@@ -14,7 +14,8 @@ function App() {
     palette: {
         primary: {
             main: "#39B54A",
-            light: "#D5E0D5"
+            light: "#D5E0D5",
+            dark: "#707070"
         }
     },
     typography: {
@@ -34,7 +35,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Login />}/>
           <Route path='/register' element={<Register />}/>
-          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>}/>
+          <Route path='/home' element={<Home />} />
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>
