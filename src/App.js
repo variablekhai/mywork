@@ -23,6 +23,10 @@ function App() {
         h4: {
             fontFamily: "Marcellus"
         },
+        h5: {
+            fontSize: 22,
+            fontWeight: 500
+        },
         button: {
             textTransform: 'none'
         }
