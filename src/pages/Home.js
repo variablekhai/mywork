@@ -3,11 +3,15 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useUserAuth } from "../context/UserAuthContext";
 import { NavBar } from "../components/NavBar";
 import { ProductCard } from "../components/ProductCard";
-import { Button, Grid, Hidden, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
-import { display, height, textAlign, width } from "@mui/system";
+import { Button, Container, Grid, Hidden, IconButton, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
+import { Box, display, height, textAlign, width } from "@mui/system";
 import Carousel from "react-material-ui-carousel";
+import FirstTimeForm from "../components/FirstTimeForm";
+import HelloCard from "../components/HelloCard";
 
 function Home() {
+
+  const { user } = useUserAuth();
 
   const [anchorElCat, setAnchorElCat] = useState(null)
 
@@ -33,38 +37,7 @@ function Home() {
     }}
     >
         <Grid item>
-          <Paper
-          sx={{
-            p: 4,
-            px: 7,
-            textAlign: 'center'
-          }}>
-            <Typography
-            fontSize={20}
-            fontWeight={600}
-            sx={{
-              mb: 1
-            }}
-            >
-              Hello, Khairul!
-            </Typography>
-            <Typography
-            fontSize={16}
-            sx={{
-              mb: 5
-            }}
-            >
-              Ready to kickstart<br/>your career?
-            </Typography>
-            <Button
-            variant="outlined"
-            sx={{
-              fontSize: 16
-            }}
-            >
-              Post a service
-            </Button>
-          </Paper>
+          <FirstTimeForm />
         </Grid>
         <Grid 
         item
@@ -122,21 +95,30 @@ function Home() {
           </Grid>
         </Grid>
         <Grid 
-        columns={14}
         container
         justifyContent="center"
+        gap={3}
+        sx={{
+          mx: '10%'
+        }}
         >
-          <Grid item md={2}>
-          <ProductCard />
+          <Grid 
+          item
+          justifyContent="center"
+          >
+            <ProductCard />
           </Grid>
-          <Grid item md={2}>
-          <ProductCard />
+          <Grid item>
+            <ProductCard />
           </Grid>
-          <Grid item md={2}>
-          <ProductCard />
+          <Grid item>
+            <ProductCard />
           </Grid>
-          <Grid item md={2}>
-          <ProductCard />
+          <Grid item>
+            <ProductCard />
+          </Grid>
+          <Grid item>
+            <ProductCard />
           </Grid>
         </Grid>
     </Grid>

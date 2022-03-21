@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
+import EditProfile from './pages/EditProfile'
 import ProtectedRoute from "./pages/ProtectedRoute"
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from "@mui/material";
@@ -39,7 +40,8 @@ function App() {
         <Routes>
           <Route path='/' element={<Login />}/>
           <Route path='/register' element={<Register />}/>
-          <Route path='/home' element={<Home />} />
+          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

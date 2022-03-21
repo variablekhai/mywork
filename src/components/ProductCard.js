@@ -7,7 +7,7 @@ import { borderColor, color, width } from '@mui/system';
 export const ProductCard = () => {
 
     return (
-        <Card sx={{ maxWidth: 260 }}>
+        <Card sx={{ maxWidth: 260, minWidth: 260 }}>
             <CardMedia
             component="img"
             height="150"
