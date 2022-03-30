@@ -1,25 +1,33 @@
 import { Avatar, Card, CardActions, CardContent, CardMedia, Icon, IconButton, Typography } from '@mui/material'
 import GradeIcon from '@mui/icons-material/Grade';
 import { yellow } from '@mui/material/colors';
-import react from 'react';
-import { borderColor, color, width } from '@mui/system';
+import React from 'react';
 
-export const ProductCard = () => {
+export const ProductCard = (props) => {
 
     return (
-        <Card sx={{ maxWidth: 260, minWidth: 260 }}>
+        <Card sx={{ height: '100%', width: 270 }}>
             <CardMedia
             component="img"
             height="150"
-            image={require('../assets/product1.png')}
+            image={props.img}
             />
-            <CardContent>
-                <Typography variant='h5'>
-                    Logo Design
+            <CardContent
+            >
+                <Typography variant='h5' noWrap>
+                    {props.name}
                 </Typography>
-                <Typography variant='body2'>
-                I will help you design a professional
-                logo for your brand.
+                <Typography 
+                variant='body2' 
+                sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    '-webkit-line-clamp': '2',
+                    '-webkit-box-orient': 'vertical',
+                }}
+                >
+                    {props.desc}
                 </Typography>
             </CardContent>
             <CardActions
@@ -44,7 +52,7 @@ export const ProductCard = () => {
                 sx={{
                     ml: 1
                 }}>
-                    Abu Bakar
+                    {props.owner}
                 </Typography>
                 <GradeIcon 
                 sx={{

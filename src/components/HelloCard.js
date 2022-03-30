@@ -3,8 +3,6 @@ import { Button, Container, Grid, Hidden, IconButton, Menu, MenuItem, Paper, Sta
 import { useUserAuth } from '../context/UserAuthContext';
 
 export default function HelloCard(props)  {
-
-    const { user } = useUserAuth();
     
     return (
         <Paper

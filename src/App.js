@@ -8,6 +8,7 @@ import ProtectedRoute from "./pages/ProtectedRoute"
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from "@mui/material";
 import { UserAuthContextProvider } from "./context/UserAuthContext";
+import AddServices from './pages/AddServices';
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
           <Route path='/register' element={<Register />}/>
           <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

@@ -51,17 +51,24 @@ export const NavBar = () => {
                             item
                             display={{ md: 'block', xs: 'none' }}
                             >
-                                {pages.map((page) => (
                                     <Button
-                                    key={page}
+                                    href="/search"
                                     sx={{
                                         color: "primary.dark",
                                         fontSize: 18
                                     }}
                                     >
-                                        {page}
+                                        Find Services
                                     </Button>
-                                ))}
+                                    <Button
+                                    href="/addservices"
+                                    sx={{
+                                        color: "primary.dark",
+                                        fontSize: 18
+                                    }}
+                                    >
+                                        Post Services
+                                    </Button>
                             </Grid>
                         </Grid>
                         <Grid item>

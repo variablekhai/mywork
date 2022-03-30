@@ -1,21 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useUserAuth } from "../context/UserAuthContext";
 import { NavBar } from "../components/NavBar";
 import { ProductCard } from "../components/ProductCard";
-import { Button, Container, Grid, Hidden, IconButton, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
-import { Box, display, height, textAlign, width } from "@mui/system";
+import { Grid, Hidden, IconButton, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import FirstTimeForm from "../components/FirstTimeForm";
 import HelloCard from "../components/HelloCard";
+import { getDoc, doc, collection, getDocs } from '@firebase/firestore';
+import { db } from "../firebase";
 
 function Home() {
 
   const { user } = useUserAuth();
-
   const [anchorElCat, setAnchorElCat] = useState(null)
 
-  const categories = ['Graphics', 'Writing'];
+  const [services, setServices] = useState([]);
+  const servicesCollectionRef = collection(db, "services");
+
+  useEffect(() => {
+      
+      const getServices = async() => {
+          const data = await getDocs(servicesCollectionRef);
+          setServices(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
+      }
+
+      getServices();
+  },[])
+
+  
 
   const handleOpenCatMenu = (event) => {
     setAnchorElCat(event.currentTarget);
@@ -24,6 +36,7 @@ function Home() {
   const handleCloseCatMenu = () => {
     setAnchorElCat(null);
   }
+
 
   return (
     <>
@@ -37,7 +50,7 @@ function Home() {
     }}
     >
         <Grid item>
-          <FirstTimeForm />
+          <HelloCard username="TEST"/>
         </Grid>
         <Grid 
         item
@@ -88,9 +101,13 @@ function Home() {
             open={Boolean(anchorElCat)}
             onClose={handleCloseCatMenu}
             >
-              {categories.map((category) => (
-                <MenuItem onClick={handleCloseCatMenu}>{category}</MenuItem>
-              ))}
+                <MenuItem onClick={handleCloseCatMenu}>Graphics & Design</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Digital Marketing</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Writing & Translation</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Video & Animation</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Music & Audio</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Programming & Tech</MenuItem>
+                <MenuItem onClick={handleCloseCatMenu}>Business</MenuItem>
             </Menu>
           </Grid>
         </Grid>
@@ -102,24 +119,16 @@ function Home() {
           mx: '10%'
         }}
         >
-          <Grid 
-          item
-          justifyContent="center"
-          >
-            <ProductCard />
-          </Grid>
-          <Grid item>
-            <ProductCard />
-          </Grid>
-          <Grid item>
-            <ProductCard />
-          </Grid>
-          <Grid item>
-            <ProductCard />
-          </Grid>
-          <Grid item>
-            <ProductCard />
-          </Grid>
+          {services.map((service) => (
+              <Grid item key={service.id}>
+                <ProductCard 
+                name={service.name}
+                desc={service.desc}
+                img={service.photoURL}
+                owner={service.owner}
+                />
+              </Grid>
+          ))}
         </Grid>
     </Grid>
     </>

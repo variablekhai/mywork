@@ -1,22 +1,36 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@mui/material';
-import react, { useState } from 'react';
+import react, { useEffect, useState } from 'react';
 import { useUserAuth } from '../context/UserAuthContext';
 import { updateProfile } from 'firebase/auth';
 import HelloCard from './HelloCard';
+import { collection, getDoc, doc, setDoc, updateDoc } from '@firebase/firestore';
+import { db } from "../firebase";
 
 export default function FirstTimeForm() {
 
     const { user } = useUserAuth();
     const [open, setOpen] = useState(true);
     const [name, setName] = useState("");
+    const [userData, setUserData] = useState({});
+
+    useEffect(async () => {
+        const docRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(docRef);
+
+        const userData = setUserData(userDoc.data());
+    },[])
+
+    const updateData = async (name) => {
+        await updateDoc(doc(db, "users", user.uid), {
+            userName: name
+        });
+    }
 
     const handleNameClick = (e) => {
-        updateProfile(user, { displayName: name });
+        updateData(name);
         setOpen(false);
     }
 
-
-    if (!user.displayName) {
         return (
             <>
             <Dialog open={open}>
@@ -51,11 +65,5 @@ export default function FirstTimeForm() {
             </Dialog>
             </>
         )
-    } else {
-        return (
-        <HelloCard username={user.displayName} />
-        
-        )
-    }
     
 }

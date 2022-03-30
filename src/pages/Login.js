@@ -1,10 +1,7 @@
-import { ThemeProvider } from "@emotion/react";
 import { Alert, AppBar, Paper, Container, Grid, TextField, Toolbar, Typography, Button, createMuiTheme, InputAdornment, Link, Divider, Icon } from "@mui/material";
-import { createTheme } from "@mui/material";
-import { borderColor, color, textTransform, typography } from "@mui/system";
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { ReactComponent as Logo } from '../assets/logo.svg'
 import { ReactComponent as GoogleIcon } from '../assets/google.svg'
 import './login.css'
@@ -17,6 +14,7 @@ function Login() {
     const [error, setError] = useState("");
     const { logIn, googleSignIn } = useUserAuth();
     const navigate = useNavigate();
+    const { currentUser } = useUserAuth();
 
     const handleGoogleSignIn = async (e) => {
         e.preventDefault();

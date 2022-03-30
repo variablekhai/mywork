@@ -1,12 +1,50 @@
-import { Label } from "@mui/icons-material";
 import { Avatar, Button, Grid, Input, TextField, Typography, Stack, TextareaAutosize } from "@mui/material";
 import NavBar from "../components/NavBar";
 import { useUserAuth } from "../context/UserAuthContext";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import { db, storage } from "../firebase";
 
 function EditProfile() {
 
     const { user } = useUserAuth();
+    const [userData, setUserData] = useState({});
+    const [name, setName] = useState("");
+
+    useEffect(async () => {
+        const docRef = doc(db, 'users', user.uid);
+        getDoc(docRef).then((doc) => {
+            setUserData(doc.data());
+        });
+  
+        setName(userData.userName);
+        console.log(name);
+    },[])
+
+    const [skill, setSkill] = useState("");
+    const [skills, setSkills] = useState([]);
+
+
+    const handleSkillChange = (e) => {
+        setSkill(e.target.value);
+    }
+
+    const addSkill = (e) => {
+        e.preventDefault();
+        skills.push(skill);
+        setSkill("");
+    }
+
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    }
+
+    const updateUser = async(name) => {
+        const userDoc = doc(db, "users", user.uid);
+        const newFields = {userName: name}
+
+        await updateDoc(userDoc, newFields);
+    }
 
     return (
         <>
@@ -20,7 +58,7 @@ function EditProfile() {
         >
             <Grid item>
                 <Typography variant="h4">
-                    Edit Profile
+                    Edit Profile {userData.userName}
                 </Typography>
             </Grid>
         </Grid>
@@ -76,7 +114,12 @@ function EditProfile() {
                 <Typography variant="h5">
                     Name: 
                 </Typography>
-                <TextField size="small" label="Username"/>
+                <TextField 
+                size="small" 
+                placeholder="Username" 
+                value={name}
+                onChange={handleNameChange}
+                />
             </Stack>
             <Stack 
             direction="row"
@@ -105,10 +148,27 @@ function EditProfile() {
                 <Typography variant="h5">
                     Skills: 
                 </Typography>
-                <TextareaAutosize 
-                placeholder="Skills will be displayed on your profile.."
-                minRows={3}
+                <TextField 
+                size="small"
+                placeholder="Insert a skill you have"
+                value={skill}
+                onChange={handleSkillChange}
+                required
                 />
+                <Button
+                disabled={!skill}
+                variant="outlined"
+                onClick={addSkill}
+                >
+                Add
+                </Button>
+            </Stack>
+            <Stack>
+                <ul>
+                {skills.map((item) => (
+                    <li>{item}</li>
+                ))}
+                </ul>
             </Stack>
             <Stack>
                 <Button 
