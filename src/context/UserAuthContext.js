@@ -6,9 +6,10 @@ import {
     onAuthStateChanged,
     GoogleAuthProvider,
     signInWithPopup,
+    getAdditionalUserInfo
 } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { setDoc, doc } from "@firebase/firestore";
+import { setDoc, doc, collection, getDoc} from "@firebase/firestore";
 
 const userAuthContext = createContext();
 
@@ -37,7 +38,17 @@ export function UserAuthContextProvider({ children }) {
 
     function googleSignIn() {
         const googleAuthProvider = new GoogleAuthProvider();
-        return signInWithPopup(auth, googleAuthProvider)
+        return signInWithPopup(auth, googleAuthProvider).then(cred => {
+            if (getAdditionalUserInfo(cred).isNewUser) {
+                return setDoc(doc(db, "users", cred.user.uid), {
+                    userName: "",
+                    photoURL: "",
+                    phoneNo: "",
+                    bio: "",
+                    skills: [""]
+                })
+            }
+        })
     }
 
     useEffect(() => {
