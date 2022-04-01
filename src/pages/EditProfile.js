@@ -1,187 +1,223 @@
-import { Avatar, Button, Grid, Input, TextField, Typography, Stack, TextareaAutosize } from "@mui/material";
-import NavBar from "../components/NavBar";
-import { useUserAuth } from "../context/UserAuthContext";
 import React, { useEffect, useRef, useState } from "react";
-import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import { Avatar, Button, Grid, Input, TextField, Typography, IconButton, Divider, FormControl, List, ListItem, ListItemText, ListItemAvatar } from "@mui/material";
+import NavBar from "../components/NavBar";
+import StarIcon from '@mui/icons-material/Star';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { yellow } from '@mui/material/colors';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { useUserAuth } from "../context/UserAuthContext";
+import { collection, doc, getDoc, updateDoc } from "@firebase/firestore";
 import { db, storage } from "../firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 
 function EditProfile() {
 
     const { user } = useUserAuth();
     const [userData, setUserData] = useState({});
+    const userCollectionRef = doc(db, "users", user.uid);
+
+    const [image, setImage] = useState(null);
+    const [url, setURL] = useState(null);
+    
     const [name, setName] = useState("");
 
-    useEffect(async () => {
-        const docRef = doc(db, 'users', user.uid);
-        getDoc(docRef).then((doc) => {
-            setUserData(doc.data());
+    useEffect(() => {
+
+        const getUsers = async() => {
+            const data = await getDoc(userCollectionRef);
+        }
+        getUsers();
+    }, [])
+    
+    const handleImageChange = (e) => {
+        if(e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    };
+    
+    const handleUploadImage = () => {
+        const imageRef = ref(storage, `${image.name}`);
+        uploadBytes(imageRef, image).then(() => {
+            getDownloadURL(imageRef).then((url) => {
+                setURL(url);
+                user.photoURL = url;
+                console.log(user.photoURL);
+            })
+            .catch(err => {
+                console.log(err.message, "Error getting the image url");
+            });
+        })
+        .catch(err => {
+            console.log(err.message, "Error getting the image url");
         });
-  
-        setName(userData.userName);
-        console.log(name);
-    },[])
-
-    const [skill, setSkill] = useState("");
-    const [skills, setSkills] = useState([]);
-
-
-    const handleSkillChange = (e) => {
-        setSkill(e.target.value);
+        setImage(null);
     }
-
-    const addSkill = (e) => {
-        e.preventDefault();
-        skills.push(skill);
-        setSkill("");
-    }
-
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-    }
-
-    const updateUser = async(name) => {
-        const userDoc = doc(db, "users", user.uid);
-        const newFields = {userName: name}
-
-        await updateDoc(userDoc, newFields);
-    }
-
+    
     return (
         <>
         <NavBar />
-        <Grid 
-        container
-        justifyContent="center"
-        sx={{
-            mt: 5
-        }}
+        <Typography
+        variant="h4"
+        textAlign="center"
+        sx={{ my: 5 }}
         >
-            <Grid item>
-                <Typography variant="h4">
-                    Edit Profile {userData.userName}
-                </Typography>
-            </Grid>
-        </Grid>
+            Edit Profile
+        </Typography>
         <Grid 
         container
-        direction="column"
-        alignItems="center"
         justifyContent="center"
-        sx={{
-            mt: 3
-        }}
+        gap={{ xs: 2, md: 5 }}
+        sx={{ mb: 5 }}
         >
             <Grid 
-            item
-            display="flex"
+            container 
+            item 
+            md={5}
+            direction="column"
+            alignItems={{ xs: 'center', md: 'flex-end'}}
+            justifyContent="flex-start"
             gap={2}
-            alignItems="flex-end"
             >
-                <Avatar
-                sx={{
-                    width: 150,
-                    height: 150
-                }}
-                />
-                <label htmlFor="contained-button-file">
+                <Grid 
+                item
+                display="flex"
+                direction="column"
+                alignItems="center"
+                gap={2}
+                >
+                    <Avatar
+                    src={user.photoURL}
+                    sx={{
+                        width: 200,
+                        height: 200
+                    }}
+                    />
+                    <label htmlFor="icon-button-file">
                     <Input 
                     accept="image/*" 
-                    id="contained-button-file" 
+                    id="icon-button-file" 
                     type="file" 
                     sx={{
                         display: 'none'
                     }}
+                    onChange={handleImageChange}
                     />
-                    <Button 
-                    variant="contained"
-                    component="span"
-                    sx={{
-                        color: '#fff'
-                    }}
+                    <IconButton color="primary" aria-label="upload picture" component="span">
+                    <PhotoCamera />
+                    </IconButton>
+                    <Button
+                    variant="outlined"
+                    onClick={handleUploadImage}
                     >
                         Upload
                     </Button>
-                </label>
+                    </label>
+                </Grid>
             </Grid>
-            <Stack 
-            direction="row"
-            alignItems="center"
-            gap={2}
-            sx={{
-                mt: 5
-            }}
+            <Grid item>
+            <Divider orientation="vertical"/>
+            </Grid>
+            <Grid 
+            container 
+            item 
+            md={5}
+            justifyContent={{ xs: 'center', md: 'flex-start' }}
             >
-                <Typography variant="h5">
-                    Name: 
-                </Typography>
-                <TextField 
-                size="small" 
-                placeholder="Username" 
-                value={name}
-                onChange={handleNameChange}
-                />
-            </Stack>
-            <Stack 
-            direction="row"
-            alignItems="center"
-            gap={2}
-            sx={{
-                mt: 2
-            }}
-            >
-                <Typography variant="h5">
-                    Bio: 
-                </Typography>
-                <TextareaAutosize 
-                placeholder="Bio will be displayed on your profile.."
-                minRows={3}
-                />
-            </Stack>
-            <Stack 
-            direction="row"
-            alignItems="center"
-            gap={2}
-            sx={{
-                mt: 2
-            }}
-            >
-                <Typography variant="h5">
-                    Skills: 
-                </Typography>
-                <TextField 
-                size="small"
-                placeholder="Insert a skill you have"
-                value={skill}
-                onChange={handleSkillChange}
-                required
-                />
-                <Button
-                disabled={!skill}
-                variant="outlined"
-                onClick={addSkill}
-                >
-                Add
-                </Button>
-            </Stack>
-            <Stack>
-                <ul>
-                {skills.map((item) => (
-                    <li>{item}</li>
-                ))}
-                </ul>
-            </Stack>
-            <Stack>
-                <Button 
-                variant="contained"
-                sx={{
-                    mt: 4,
-                    color: '#fff'
-                }}
-                >
-                    Save
-                </Button>
-            </Stack>
+                <Grid item>
+                    <FormControl
+                    fullWidth
+                    sx={{
+                        width: {xs: 300, md: 400},
+                        gap: 2,
+                    }}
+                    >
+                        <TextField 
+                        size="small"
+                        label="Username"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        fullWidth
+                        />
+                        <TextField 
+                        size="small"
+                        label="Email"
+                        value={user.email}
+                        fullWidth
+                        disabled
+                        />
+                        <TextField 
+                        label="Bio"
+                        multiline
+                        rows={2}
+                        fullWidth
+                        inputProps={{
+                            maxLength: 80
+                        }}
+                        />
+                        <TextField 
+                        size="small"
+                        label="Phone Number"
+                        fullWidth
+                        InputProps={{
+                            startAdornment: '+60 '
+                        }}
+                        />
+                        <Typography variant="h4">
+                            Skills
+                        </Typography>
+                        <List dense>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <StarIcon
+                                    sx={{ color: yellow[700] }}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText>
+                                    Skill 1
+                                </ListItemText>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <StarIcon
+                                    sx={{ color: yellow[700] }}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText>
+                                    Skill 2
+                                </ListItemText>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <StarIcon
+                                    sx={{ color: yellow[700] }}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText>
+                                    Skill 3
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                        <TextField 
+                        size="small"
+                        label="Skill"
+                        fullWidth
+                        InputProps={{
+                          endAdornment: <IconButton edge="end" color="primary"><AddCircleIcon /></IconButton>
+                        }}
+                        helperText="You may only add 3 skills."
+                        />
+                        <Button 
+                        variant="contained" 
+                        sx={{ color: '#fff' }}
+                        >
+                            Save
+                        </Button>
+                    </FormControl>
+                </Grid>
+            </Grid>
         </Grid>
+
         </>
     )
 }

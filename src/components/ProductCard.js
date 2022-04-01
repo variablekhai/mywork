@@ -6,7 +6,15 @@ import React from 'react';
 export const ProductCard = (props) => {
 
     return (
-        <Card sx={{ height: '100%', width: 270 }}>
+        <Card 
+        sx={{ 
+            height: '100%', 
+            width: 270,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+        }}
+        >
             <CardMedia
             component="img"
             height="150"
@@ -23,8 +31,8 @@ export const ProductCard = (props) => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
-                    '-webkit-line-clamp': '2',
-                    '-webkit-box-orient': 'vertical',
+                    WebkitLineClamp: '2',
+                    WebkitBoxOrient: 'vertical',
                 }}
                 >
                     {props.desc}

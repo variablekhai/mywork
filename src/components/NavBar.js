@@ -74,7 +74,7 @@ export const NavBar = () => {
                         <Grid item>
                             <Tooltip title="Profile">
                                 <IconButton onClick={handleOpenUserMenu}>
-                                    <Avatar />
+                                    <Avatar src={user.photoURL}/>
                                 </IconButton>
                             </Tooltip>
                             <Menu
