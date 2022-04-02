@@ -23,7 +23,7 @@ export function UserAuthContextProvider({ children }) {
                 photoURL: "",
                 phoneNo: "",
                 bio: "",
-                skills: [""]
+                skills: []
             })
         });
 
@@ -45,7 +45,7 @@ export function UserAuthContextProvider({ children }) {
                     photoURL: "",
                     phoneNo: "",
                     bio: "",
-                    skills: [""]
+                    skills: []
                 })
             }
         })

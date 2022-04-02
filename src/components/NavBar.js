@@ -1,23 +1,40 @@
+import { doc, onSnapshot } from "@firebase/firestore";
 import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from '../assets/logo.svg'
 import { useUserAuth } from "../context/UserAuthContext";
+import { db } from "../firebase";
 
 export const NavBar = () => {
 
     const { user, logOut } = useUserAuth();
+    const [photoURL, setPhotoURL] = useState("");
     
+    useEffect(() => {
+
+        const unsub = onSnapshot(
+            doc(db, "users", localStorage.keyid),
+            (userSnap) => {
+                localStorage.setItem("picture", userSnap.data().photoURL)
+            }
+        )
+
+        return () => {
+            unsub();
+        };
+
+    }, [])
+
+
     const handleLogOut = async () => {
         try {
             await logOut();
         } catch (err) {
             console.log(err.message);
         }
-        }
+    }
 
-    const pages = ['Find Services', 'Post Services'];
-    const settings = ['Profile', 'Logout'];
 
     const [anchorElUser, setAnchorElUser] = useState(null);
     
@@ -74,7 +91,7 @@ export const NavBar = () => {
                         <Grid item>
                             <Tooltip title="Profile">
                                 <IconButton onClick={handleOpenUserMenu}>
-                                    <Avatar src={user.photoURL}/>
+                                    <Avatar src={localStorage.picture}/>
                                 </IconButton>
                             </Tooltip>
                             <Menu

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Avatar, Button, Grid, Input, TextField, Typography, IconButton, Divider, FormControl, List, ListItem, ListItemText, ListItemAvatar } from "@mui/material";
+import { Avatar, Button, Grid, Input, TextField, Typography, IconButton, Divider, FormControl, List, ListItem, ListItemText, ListItemAvatar, Alert } from "@mui/material";
 import NavBar from "../components/NavBar";
 import StarIcon from '@mui/icons-material/Star';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { yellow } from '@mui/material/colors';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useUserAuth } from "../context/UserAuthContext";
-import { collection, doc, getDoc, updateDoc } from "@firebase/firestore";
+import { collection, doc, getDoc, updateDoc, onSnapshot, setDoc } from "@firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
@@ -15,21 +16,45 @@ function EditProfile() {
 
     const { user } = useUserAuth();
     const [userData, setUserData] = useState({});
-    const userCollectionRef = doc(db, "users", user.uid);
+    localStorage.setItem("keyid", user.uid);
 
     const [image, setImage] = useState(null);
     const [url, setURL] = useState(null);
+    const [success, setSuccess] = useState({success: false, msg: ""});
     
     const [name, setName] = useState("");
+    const [bio, setBio] = useState("");
+    const [phone, setPhone] = useState("");
+    const [skills, setSkills] = useState([]);
+    const [skillInput, setSkillInput] = useState("");
 
     useEffect(() => {
 
-        const getUsers = async() => {
-            const data = await getDoc(userCollectionRef);
-        }
-        getUsers();
+        const unsub = onSnapshot(
+            doc(db, "users", localStorage.keyid),
+            (userSnap) => {
+                setUserData(userSnap.data())
+            }
+        )
+
+        return () => {
+            unsub();
+        };
+
     }, [])
-    
+
+    useEffect(() => {
+
+        if (userData) {
+            setName(userData.userName)
+            setBio(userData.bio)
+            setPhone(userData.phoneNo)
+            setSkills(userData.skills)
+        }
+
+    }, [userData])
+
+
     const handleImageChange = (e) => {
         if(e.target.files[0]) {
             setImage(e.target.files[0]);
@@ -41,7 +66,9 @@ function EditProfile() {
         uploadBytes(imageRef, image).then(() => {
             getDownloadURL(imageRef).then((url) => {
                 setURL(url);
-                user.photoURL = url;
+                updateDoc(doc(db, "users", localStorage.keyid), {
+                    photoURL: url
+                })
                 console.log(user.photoURL);
             })
             .catch(err => {
@@ -53,7 +80,29 @@ function EditProfile() {
         });
         setImage(null);
     }
+
+    const handleUpdateAccount = () => {
+        updateDoc(doc(db, "users", localStorage.keyid), {
+            userName: name,
+            bio: bio,
+            phoneNo: phone,
+            skills: skills
+        }).then(() => {
+            setSuccess({success: true, msg: "Succesfully updated your account!"})
+        })
+    }
+
+    const handleAddSkill = () => {
+        setSkills(skills => [...skills, skillInput]);
+    }
     
+    const handleDeleteSkill = (id) => {
+        console.log(id);
+        const newList = skills.filter((skill) => skill !== id);
+
+        setSkills(newList);
+    }
+
     return (
         <>
         <NavBar />
@@ -87,7 +136,7 @@ function EditProfile() {
                 gap={2}
                 >
                     <Avatar
-                    src={user.photoURL}
+                    src={userData?.photoURL}
                     sx={{
                         width: 200,
                         height: 200
@@ -132,22 +181,25 @@ function EditProfile() {
                         gap: 2,
                     }}
                     >
+                        {success.success && <Alert severity="success">{ success.msg }</Alert>}
                         <TextField 
                         size="small"
                         label="Username"
-                        value={name}
+                        value={name || ""}
                         onChange={(e) => setName(e.target.value)}
                         fullWidth
                         />
                         <TextField 
                         size="small"
                         label="Email"
-                        value={user.email}
+                        value={user.email || ""}
                         fullWidth
                         disabled
                         />
                         <TextField 
                         label="Bio"
+                        value={bio || ""}
+                        onChange={(e) => setBio(e.target.value)}
                         multiline
                         rows={2}
                         fullWidth
@@ -158,57 +210,51 @@ function EditProfile() {
                         <TextField 
                         size="small"
                         label="Phone Number"
+                        value={phone || ""}
+                        onChange={(e) => setPhone(e.target.value)}
                         fullWidth
                         InputProps={{
-                            startAdornment: '+60 '
+                            startAdornment: '+60 ',
+                            maxLength: 8
                         }}
                         />
                         <Typography variant="h4">
                             Skills
                         </Typography>
                         <List dense>
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <StarIcon
-                                    sx={{ color: yellow[700] }}
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText>
-                                    Skill 1
-                                </ListItemText>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <StarIcon
-                                    sx={{ color: yellow[700] }}
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText>
-                                    Skill 2
-                                </ListItemText>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <StarIcon
-                                    sx={{ color: yellow[700] }}
-                                    />
-                                </ListItemAvatar>
-                                <ListItemText>
-                                    Skill 3
-                                </ListItemText>
-                            </ListItem>
+                            {skills?.map((skill) => (
+                                <ListItem 
+                                key={skill}
+                                secondaryAction={
+                                    <IconButton edge="end" onClick={() => handleDeleteSkill(skill)}>
+                                        <RemoveCircleIcon sx={{ color: '#FF0000 '}}/>
+                                    </IconButton>
+                                }
+                                >
+                                    <ListItemAvatar>
+                                        <StarIcon
+                                        sx={{ color: yellow[700] }}
+                                        />
+                                    </ListItemAvatar>
+                                    <ListItemText>
+                                        {skill}
+                                    </ListItemText>
+                                </ListItem>
+                            ))}
                         </List>
                         <TextField 
                         size="small"
                         label="Skill"
                         fullWidth
+                        onChange={(e) => setSkillInput(e.target.value)}
                         InputProps={{
-                          endAdornment: <IconButton edge="end" color="primary"><AddCircleIcon /></IconButton>
+                          endAdornment: <IconButton edge="end" color="primary" onClick={handleAddSkill}><AddCircleIcon /></IconButton>
                         }}
-                        helperText="You may only add 3 skills."
+                        helperText="You may only add 3 skills. (Be sure to save)"
                         />
                         <Button 
                         variant="contained" 
+                        onClick={handleUpdateAccount}
                         sx={{ color: '#fff' }}
                         >
                             Save

@@ -25,6 +25,8 @@ function Home() {
       }
 
       getServices();
+
+      localStorage.setItem("keyid", user.uid);
   },[])
 
   
