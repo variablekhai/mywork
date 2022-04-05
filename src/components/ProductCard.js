@@ -1,9 +1,22 @@
 import { Avatar, Card, CardActions, CardContent, CardMedia, Icon, IconButton, Typography } from '@mui/material'
 import GradeIcon from '@mui/icons-material/Grade';
 import { yellow } from '@mui/material/colors';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs, query, where } from '@firebase/firestore';
+import { db } from '../firebase';
 
 export const ProductCard = (props) => {
+
+    const [userData, setUserData] = useState([]);
+
+    const q = query(collection(db, "users"), where("email", "==", props.ownerEmail));
+
+    useEffect(async() => {
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            setUserData(doc.data())
+        })
+    }, [])
 
     return (
         <Card 
@@ -50,6 +63,7 @@ export const ProductCard = (props) => {
                     p:0
                 }}>
                     <Avatar
+                    src={userData.photoURL}
                     sx={{
                         height: 30,
                         width: 30
@@ -58,9 +72,12 @@ export const ProductCard = (props) => {
                 </IconButton>
                 <Typography
                 sx={{
-                    ml: 1
+                    ml: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: 135
                 }}>
-                    {props.owner}
+                    {userData.userName}
                 </Typography>
                 <GradeIcon 
                 sx={{
@@ -68,7 +85,7 @@ export const ProductCard = (props) => {
                     ml: 'auto'
                 }}/>
                 <Typography>
-                    5.0 (11)
+                    {props.ratings} ({props.totalRatings})
                 </Typography>
             </CardActions>
         </Card>

@@ -9,7 +9,7 @@ import { db } from "../firebase";
 export const NavBar = () => {
 
     const { user, logOut } = useUserAuth();
-    const [photoURL, setPhotoURL] = useState("");
+    localStorage.setItem("keyid", user.uid);
     
     useEffect(() => {
 
@@ -61,9 +61,10 @@ export const NavBar = () => {
                         <Grid
                         item
                         display="flex"
+                        alignItems="center"
                         gap={10}
                         >
-                            <Logo height={40}/>
+                            <Button href="/home"><Logo height={40}/></Button>
                             <Grid 
                             item
                             display={{ md: 'block', xs: 'none' }}

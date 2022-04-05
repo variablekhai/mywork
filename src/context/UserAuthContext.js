@@ -20,6 +20,7 @@ export function UserAuthContextProvider({ children }) {
         return createUserWithEmailAndPassword(auth, email, password).then(cred => {
             return setDoc(doc(db, "users", cred.user.uid), {
                 userName: "",
+                email: cred.user.email,
                 photoURL: "",
                 phoneNo: "",
                 bio: "",
@@ -42,6 +43,7 @@ export function UserAuthContextProvider({ children }) {
             if (getAdditionalUserInfo(cred).isNewUser) {
                 return setDoc(doc(db, "users", cred.user.uid), {
                     userName: "",
+                    email: cred.user.email,
                     photoURL: "",
                     phoneNo: "",
                     bio: "",

@@ -1,9 +1,29 @@
-import react, { useState } from 'react';
+import react, { useEffect, useState } from 'react';
 import { Button, Container, Grid, Hidden, IconButton, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
 import { useUserAuth } from '../context/UserAuthContext';
+import { doc, onSnapshot } from '@firebase/firestore';
+import { db } from '../firebase';
 
 export default function HelloCard(props)  {
     
+    const { user } = useUserAuth();
+    localStorage.setItem("keyid", user.uid);
+    
+    useEffect(() => {
+
+        const unsub = onSnapshot(
+            doc(db, "users", localStorage.keyid),
+            (userSnap) => {
+                localStorage.setItem("name", userSnap.data().userName)
+            }
+        )
+
+        return () => {
+            unsub();
+        };
+
+    }, [])
+
     return (
         <Paper
           sx={{
@@ -18,7 +38,7 @@ export default function HelloCard(props)  {
               mb: 1
             }}
             >
-              Hello, {props.username}!
+              Hello, {localStorage.name}!
             </Typography>
             <Typography
             fontSize={16}
