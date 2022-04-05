@@ -73,8 +73,8 @@ function Home() {
             borderRadius: 1
           }}>
               <img src={require('../assets/banner1.svg').default} width={800}/>
-              <img src={require('../assets/img2.png')} width={800}/>
-              <img src={require('../assets/img3.png')} width={800}/>
+              <img src={require('../assets/banner2.svg').default} width={800}/>
+              <img src={require('../assets/banner3.svg').default} width={800}/>
           </Carousel>
         </Grid>
       </Grid>

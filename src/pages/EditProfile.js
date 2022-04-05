@@ -219,7 +219,7 @@ function EditProfile() {
                         }}
                         />
                         <Typography variant="h4">
-                            Skills
+                            Skills / Expertise
                         </Typography>
                         <List dense>
                             {skills?.map((skill) => (
