@@ -39,11 +39,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <UserAuthContextProvider>
         <Routes>
-          <Route path='/' element={<Login />}/>
-          <Route path='/register' element={<Register />}/>
-          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
+          <Route path='/mywork/' element={<Login />}/>
+          <Route path='/mywork/register' element={<Register />}/>
+          <Route path='/mywork/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path='/mywork/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path='/mywork/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>
