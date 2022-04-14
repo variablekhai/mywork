@@ -4,6 +4,7 @@ import { yellow } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from '../firebase';
+import { Link } from 'react-router-dom';
 
 export const ProductCard = (props) => {
 
@@ -57,8 +58,10 @@ export const ProductCard = (props) => {
                 borderTop: 1,
                 borderColor: 'primary.light',
             }}
-            >
+            > 
                 <IconButton
+                component={Link}
+                to={"/profile/"+userData.id}
                 sx={{
                     p:0
                 }}>

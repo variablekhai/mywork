@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Routes, Route, HashRouter} from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
@@ -9,6 +9,8 @@ import { ThemeProvider } from '@emotion/react';
 import { createTheme } from "@mui/material";
 import { UserAuthContextProvider } from "./context/UserAuthContext";
 import AddServices from './pages/AddServices';
+import Profile from './pages/Profile';
+import EditServices from './pages/EditServices';
 
 function App() {
 
@@ -39,11 +41,13 @@ function App() {
     <ThemeProvider theme={theme}>
       <UserAuthContextProvider>
         <Routes>
-          <Route path='/mywork/' element={<Login />}/>
-          <Route path='/mywork/register' element={<Register />}/>
-          <Route path='/mywork/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path='/mywork/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path='/mywork/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
+          <Route path='/' element={<Login />}/>
+          <Route path='/register' element={<Register />}/>
+          <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path='/profile/:userID' element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
+          <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
+          <Route path='/editservices/:serviceID' element={<ProtectedRoute><EditServices /></ProtectedRoute>} />
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

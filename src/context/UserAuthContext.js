@@ -19,6 +19,7 @@ export function UserAuthContextProvider({ children }) {
     function signUp(email, password) {
         return createUserWithEmailAndPassword(auth, email, password).then(cred => {
             return setDoc(doc(db, "users", cred.user.uid), {
+                id: cred.user.uid,
                 userName: "",
                 email: cred.user.email,
                 photoURL: "",
@@ -42,6 +43,7 @@ export function UserAuthContextProvider({ children }) {
         return signInWithPopup(auth, googleAuthProvider).then(cred => {
             if (getAdditionalUserInfo(cred).isNewUser) {
                 return setDoc(doc(db, "users", cred.user.uid), {
+                    id: cred.user.uid,
                     userName: "",
                     email: cred.user.email,
                     photoURL: "",

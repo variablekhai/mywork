@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
     })
 
     if (!user) {
-        return <Navigate to="/mywork/"/>;
+        return <Navigate to="/"/>;
     }
     return children;
 };

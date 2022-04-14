@@ -102,7 +102,7 @@ export const NavBar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                             >
-                                <MenuItem component={Link} to="/editprofile">Profile</MenuItem>
+                                <MenuItem component={Link} to={"/profile/"+user.uid}>Profile</MenuItem>
                                 <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
                             </Menu>
                         </Grid>
