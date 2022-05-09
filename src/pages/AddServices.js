@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { NavBar } from "../components/NavBar";
 import { useUserAuth } from "../context/UserAuthContext";
 import { db, storage } from "../firebase";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 function AddServices() {
 
@@ -16,6 +17,7 @@ function AddServices() {
     const [image, setImage] = useState(null);
     const [url, setURL] = useState(null);
     const [price, setPrice] = useState(0);
+    const [deliveryTime, setDeliveryTime] = useState(0);
     const [message, setMessage] = useState({error: false, msg: ""});
     const [successMessage, setSuccessMessage] = useState({success: false, msg: ""});
 
@@ -48,6 +50,7 @@ function AddServices() {
         setImage(null)
         setURL(null)
         setPrice(0)
+        setDeliveryTime(0);
         setSuccessMessage({success: false, msg: ""})
     }
 
@@ -55,7 +58,7 @@ function AddServices() {
         e.preventDefault();
         setMessage("");
 
-        if (serviceName === "" || serviceDesc === "" || category === "" || price === 0 || url == null) {
+        if (serviceName === "" || serviceDesc === "" || category === "" || price === 0 || url == null || deliveryTime == 0) {
             setSuccessMessage({success: false, msg: ""})
             setMessage({error: true, msg: "All fields are required!"})
             return;
@@ -69,7 +72,8 @@ function AddServices() {
             price: price,
             photoURL: url,
             verified: false,
-            review: []
+            review: [],
+            deliveryTime: deliveryTime
         }).then(() => {
             clearFields()
             setSuccessMessage({success: true, msg: "Successfully posted your service!"})
@@ -161,6 +165,19 @@ function AddServices() {
                         label="Price"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel id="delivery-input-label">Delivery Time</InputLabel>
+                        <OutlinedInput
+                        required
+                        type="number"
+                        id="delivery-input-label"
+                        startAdornment={<InputAdornment position="start"><LocalShippingIcon/></InputAdornment>}
+                        endAdornment={<InputAdornment position="end">day(s)</InputAdornment>}
+                        label="Delivery Time"
+                        value={deliveryTime}
+                        onChange={(e) => setDeliveryTime(e.target.value)}
                         />
                     </FormControl>
                     <Typography variant="h5">

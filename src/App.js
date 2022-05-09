@@ -11,6 +11,10 @@ import { UserAuthContextProvider } from "./context/UserAuthContext";
 import AddServices from './pages/AddServices';
 import Profile from './pages/Profile';
 import EditServices from './pages/EditServices';
+import Service from './pages/Service';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
+import Order from './pages/Order';
 
 function App() {
 
@@ -29,7 +33,7 @@ function App() {
         },
         h5: {
             fontSize: 22,
-            fontWeight: 500
+            fontWeight: 600
         },
         button: {
             textTransform: 'none'
@@ -48,6 +52,10 @@ function App() {
           <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
           <Route path='/editservices/:serviceID' element={<ProtectedRoute><EditServices /></ProtectedRoute>} />
+          <Route path='/service/:serviceID' element={<ProtectedRoute><Service /></ProtectedRoute>} />
+          <Route path='/checkout/:serviceID/for/:userID' element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
+          <Route path='/checkout/success' element={<ProtectedRoute><OrderSuccess/></ProtectedRoute>}></Route>
+          <Route path='/orders/:userID' element={<ProtectedRoute><Order/></ProtectedRoute>}></Route>
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

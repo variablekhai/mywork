@@ -3,12 +3,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useUserAuth } from "../context/UserAuthContext";
 import { NavBar } from "../components/NavBar";
 import { ProductCard } from "../components/ProductCard";
-import { Grid, Hidden, IconButton, Menu, MenuItem, Paper, Stack, Typography } from "@mui/material";
+import { Grid, Hidden, IconButton, Menu, MenuItem, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import HelloCard from "../components/HelloCard";
 import { getDoc, doc, collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from "../firebase";
-import Footer from "../components/Footer";
 
 function Home() {
 
@@ -157,6 +156,7 @@ function Home() {
             ownerEmail={service.owner}
             ratings={calc()}
             totalRatings={service.review.length}
+            serviceLink={service.id}
             />
           </Grid>
         )

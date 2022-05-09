@@ -1,4 +1,4 @@
-import { Avatar, Card, CardActions, CardContent, CardMedia, Icon, IconButton, Typography } from '@mui/material'
+import { Avatar, Card, CardActionArea, CardActions, CardContent, CardMedia, Icon, IconButton, Typography } from '@mui/material'
 import GradeIcon from '@mui/icons-material/Grade';
 import { yellow } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
@@ -29,29 +29,31 @@ export const ProductCard = (props) => {
             justifyContent: 'space-between',
         }}
         >
-            <CardMedia
-            component="img"
-            height="150"
-            image={props.img}
-            />
-            <CardContent
-            >
-                <Typography variant='h5' noWrap>
-                    {props.name}
-                </Typography>
-                <Typography 
-                variant='body2' 
-                sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: '2',
-                    WebkitBoxOrient: 'vertical',
-                }}
+            <CardActionArea component={Link} to={"/service/"+props.serviceLink}>
+                <CardMedia
+                component="img"
+                height="150"
+                image={props.img}
+                />
+                <CardContent
                 >
-                    {props.desc}
-                </Typography>
-            </CardContent>
+                    <Typography variant='h5' noWrap>
+                        {props.name}
+                    </Typography>
+                    <Typography 
+                    variant='body2' 
+                    sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: '2',
+                        WebkitBoxOrient: 'vertical',
+                    }}
+                    >
+                        {props.desc}
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
             <CardActions
             disableSpacing
             sx={{

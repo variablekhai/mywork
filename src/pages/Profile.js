@@ -67,6 +67,27 @@ function Profile({ props }) {
         };
     }, [])
 
+    const userRating = () => {
+
+        let totalRating = 0;
+        services?.forEach((service) => {
+            for (let i = 0; i < service.review.length; i++) {
+                totalRating += parseInt(service.review[i].rating)/service.review.length;
+            }
+        })
+        return (totalRating/services?.length).toFixed(1);
+    }
+
+    const totalUserRating = () => {
+
+        let total = 0;
+        services?.forEach((service) => {
+            total += service.review.length;
+        })
+
+        return total;
+    }
+
     return (
         <>
         <NavBar />
@@ -159,7 +180,7 @@ function Profile({ props }) {
                                 <Typography
                                 display="inline"
                                 >
-                                    5.0 (11)
+                                    {userRating()} ({totalUserRating()})
                                 </Typography>
                             </Grid>
                         </Paper>
@@ -289,6 +310,7 @@ function Profile({ props }) {
                     ownerEmail={service.owner}
                     ratings={calc()}
                     totalRatings={service.review.length}
+                    serviceLink={service.id}
                     />
                     </Grid>
                     )

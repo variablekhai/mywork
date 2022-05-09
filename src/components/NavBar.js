@@ -1,10 +1,12 @@
 import { doc, onSnapshot } from "@firebase/firestore";
-import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material"
+import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Badge } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from '../assets/logo.svg'
 import { useUserAuth } from "../context/UserAuthContext";
 import { db } from "../firebase";
+import ArticleIcon from '@mui/icons-material/Article';
+import styled from "@emotion/styled";
 
 export const NavBar = () => {
 
@@ -45,6 +47,13 @@ export const NavBar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     }
+
+    const StyledBadge = styled(Badge)({
+        "& .MuiBadge-badge": {
+          color: "#fff",
+          backgroundColor: "#39B54A"
+        }
+      });
 
     return (
         <AppBar
@@ -90,6 +99,11 @@ export const NavBar = () => {
                             </Grid>
                         </Grid>
                         <Grid item>
+                            <IconButton sx={{ mr: 1 }} component={Link} to={"/orders/"+user.uid}>
+                                <StyledBadge badgeContent={3}>
+                                    <ArticleIcon sx={{ width: 25, height: 25}}/>
+                                </StyledBadge>
+                            </IconButton>
                             <Tooltip title="Profile">
                                 <IconButton onClick={handleOpenUserMenu}>
                                     <Avatar src={localStorage.picture}/>
