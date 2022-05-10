@@ -6,25 +6,69 @@ import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import { ExpandCircleDown } from "@mui/icons-material";
+import { where, getDocs, query, collection, getDoc, doc } from "@firebase/firestore";
+import { db } from "../firebase";
+import OrderCard from "../components/OrderCard";
+import OrderCompletedCard from "../components/OrderCompletedCard";
+import PendingPurchaseCard from "../components/PendingPurchaseCard";
+import CompletedPurchaseCard from "../components/CompletedPurchaseCard";
 
 function Order() {
 
     let { userID } = useParams();
 
     const [tabValue, setTabValue] = useState("1");
-    const [open, setOpen] = useState(false);
 
+    const [userPendingOrders, setUserPendingOrders] = useState([]);
+    const [userPurchases, setUserPurchases] = useState([]);
+
+    const [serviceData, setServiceData] = useState({});
+    const [buyerData, setBuyerData] = useState({});
+
+    // OnClick Events
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     }
+    //
 
-    const handleOpenDialog = () => {
-        setOpen(true)
+    // Firebase
+
+    const q = query(collection(db, "orders"), where("sellerID", "==", userID));
+    const qPurchases = query(collection(db, "orders"), where("buyerID", "==", userID));
+
+    useEffect(() => {
+
+        const getPendingOrders = async() => {
+            const data = await getDocs(q);
+            setUserPendingOrders(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
+        }
+
+        const getUserPurchases = async() => {
+            const data = await getDocs(qPurchases);
+            setUserPurchases(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
+        }
+
+        getPendingOrders();
+        getUserPurchases();
+
+    }, [])
+   
+    function isPending(value) {
+        return value.isCompleted == false
     }
 
-    const handleCloseDialog = () => {
-        setOpen(false)
+    function isCompleted(value) {
+        return value.isCompleted == true
     }
+
+    function isMyOrder(value) {
+        return value.buyerID == userID;
+    }
+
+    useEffect(() => {
+        console.log(serviceData);
+    }, [serviceData])
+    //
 
     return (
         <>
@@ -46,88 +90,70 @@ function Order() {
                     <TabList onChange={handleTabChange}>
                         <Tab label="Your pending tasks" value="1" />
                         <Tab label="Your completed tasks" value="2" />
-                        <Tab label="Your purchases" value="3" />
+                        <Tab label="Your pending purchases" value="3" />
+                        <Tab label="Your completed purchases" value="4" />
                     </TabList>
                     <TabPanel value="1">
-                        <Paper
-                        sx={{ p: 2 }}
-                        >
-                            <Grid container alignItems="center">
-                                <Grid item md={2}>
-                                    <CardMedia
-                                        component="img"
-                                        src="https://fiverr-res.cloudinary.com/videos/so_1.768885,t_main1,q_auto,f_auto/mhbrsng1kblc1k7xm9df/record-any-voice-over-today-within-24hrs-or-less.png"
-                                        sx={{ width: {md: 130, xs: 300}, height: {md: 100, xs: 180}}}
-                                    />
-                                </Grid>
-                                <Grid container item direction="column" md={8}>
-                                <Typography variant="h5">
-                                    I will design you a very good logo
-                                </Typography>
-                                <Typography
-                                sx={{
-                                    fontSize: 14
-                                }}
-                                >
-                                    Buyer: <Box component="span" sx={{ fontWeight: 600 }}>buyer.name</Box>
-                                </Typography>
-                                <Typography
-                                sx={{
-                                    fontSize: 14
-                                }}
-                                >
-                                    Date order placed: <Box component="span" sx={{ fontWeight: 600 }}>1/1/1</Box>
-                                </Typography>
-                                <Typography
-                                sx={{
-                                    fontSize: 14
-                                }}
-                                >
-                                    Time remaining: <Box component="span" sx={{ fontWeight: 600 }}>3 days left</Box>
-                                </Typography>
-                                <Typography
-                                sx={{
-                                    fontSize: 14
-                                }}
-                                >
-                                    Status: <Box component="span" sx={{ fontWeight: 600 }}>Pending</Box>
-                                </Typography>
-                                <Button 
-                                variant="outlined"
-                                sx={{ width: {md: "30%", xs: "100%"}, mt: 1}}
-                                onClick={handleOpenDialog}
-                                >
-                                    Special Requirements
-                                </Button>
-                                <Dialog
-                                open={open}
-                                onClose={handleCloseDialog}
-                                >
-                                    <DialogTitle>
-                                        {"Special Requirements by Customer"}
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            Here is some special requirements.
-                                        </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleCloseDialog}>Ok</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                </Grid>
-                                <Grid container item direction="column" md={2} gap={1}>
-                                    <Button variant="contained" sx={{ color: "#fff" }}>
-                                        Deliver your work
-                                    </Button>
-                                    <Button variant="outlined">
-                                        Contact buyer
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Paper>
+                        {userPendingOrders.filter(isPending).map((order) => {                  
+
+                            return(
+                                <OrderCard
+                                key={order?.id}
+                                serviceID={order?.serviceID}
+                                buyerID={order?.buyerID}
+                                date={order?.dateOrderCreated}
+                                status={order?.isCompleted}
+                                requirements={order?.specialRequirements}
+                                />
+                            )
+                        })}
+                        
                     </TabPanel>
-                    <TabPanel value="2">Hello 2</TabPanel>
+                    <TabPanel value="2">
+                        {userPendingOrders.filter(isCompleted).map((order) => {                  
+
+                            return(
+                            <OrderCompletedCard
+                            key={order?.id}
+                            serviceID={order?.serviceID}
+                            buyerID={order?.buyerID}
+                            date={order?.dateOrderCreated}
+                            status={order?.isCompleted}
+                            requirements={order?.specialRequirements}
+                            />
+                            )
+                        })}
+                    </TabPanel>
+                    <TabPanel value="3">
+                        {userPurchases.filter(isPending).map((order) => {
+                            return (
+                                <PendingPurchaseCard
+                                key={order?.id}
+                                serviceID={order?.serviceID}
+                                sellerID={order?.sellerID}
+                                date={order?.dateOrderCreated}
+                                status={order?.isCompleted}
+                                requirements={order?.specialRequirements}
+                                />
+                            )
+                        })
+                        }
+                    </TabPanel>
+                    <TabPanel value="4">
+                        {userPurchases.filter(isCompleted).map((order) => {
+                            return (
+                                <CompletedPurchaseCard
+                                key={order?.id}
+                                serviceID={order?.serviceID}
+                                sellerID={order?.sellerID}
+                                date={order?.dateOrderCreated}
+                                status={order?.isCompleted}
+                                requirements={order?.specialRequirements}
+                                />
+                            )
+                        })
+                        }
+                    </TabPanel>
                 </TabContext>
             </Grid>
         </Grid>

@@ -5,11 +5,10 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import { db } from "../firebase";
 import pluralize from "pluralize";
-import OrderSuccess from "./OrderSuccess";
 
 function Checkout() {
 
-    const { serviceID, userID } = useParams();
+    const { serviceID, userID, sellerID } = useParams();
     const [serviceData, setServiceData] = useState({});
     
     const navigate = useNavigate();
@@ -61,7 +60,7 @@ function Checkout() {
         addDoc(collection(db, "orders"), {
             serviceID: serviceID,
             buyerID: userID,
-            sellerID: serviceData?.owner,
+            sellerID: sellerID,
             dateOrderCreated: new Date().toDateString(),
             fastDelivery: fastDelivery,
             specialRequirements: requirements,

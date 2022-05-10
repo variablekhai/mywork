@@ -53,7 +53,7 @@ function App() {
           <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
           <Route path='/editservices/:serviceID' element={<ProtectedRoute><EditServices /></ProtectedRoute>} />
           <Route path='/service/:serviceID' element={<ProtectedRoute><Service /></ProtectedRoute>} />
-          <Route path='/checkout/:serviceID/for/:userID' element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
+          <Route path='/checkout/:serviceID/for/:userID/:sellerID' element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
           <Route path='/checkout/success' element={<ProtectedRoute><OrderSuccess/></ProtectedRoute>}></Route>
           <Route path='/orders/:userID' element={<ProtectedRoute><Order/></ProtectedRoute>}></Route>
         </Routes>

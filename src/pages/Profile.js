@@ -82,6 +82,7 @@ function Profile({ props }) {
 
         let total = 0;
         services?.forEach((service) => {
+            
             total += service.review.length;
         })
 
