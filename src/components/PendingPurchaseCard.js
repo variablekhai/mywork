@@ -1,4 +1,4 @@
-import { doc, getDoc } from "@firebase/firestore";
+import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import { Typography, Grid, Paper, CardMedia, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
@@ -9,6 +9,8 @@ export default function PendingPurchaseCard(props) {
 
     const [serviceData, setServiceData] = useState({});
     const [sellerData, setSellerData] = useState({});
+
+    const [openCompleteDialog, setOpenCompleteDialog] = useState(false);
 
     const serviceID = props.serviceID;
     const sellerID = props.sellerID;
@@ -34,6 +36,22 @@ export default function PendingPurchaseCard(props) {
 
     const handleCloseDialog = () => {
         setOpen(false)
+    }
+
+    const handleOpenCompleteDialog = () => {
+        setOpenCompleteDialog(true);
+    }
+
+    const handleCloseCompleteDialog = () => {
+        setOpenCompleteDialog(false);
+    }
+
+    const handleMarkAsCompleted = async() => {
+        await updateDoc(doc(db, "orders", props.orderID), {
+            isCompleted: true
+        }).then(
+            setOpenCompleteDialog(false)
+        )
     }
 
     return (
@@ -105,9 +123,26 @@ export default function PendingPurchaseCard(props) {
                 </Dialog>
                 </Grid>
                 <Grid container item direction="column" md={2} gap={1}>
-                    <Button variant="contained" sx={{ color: "#fff" }}>
+                    <Button variant="contained" sx={{ color: "#fff" }} onClick={handleOpenCompleteDialog}>
                         Mark as completed
                     </Button>
+                    <Dialog
+                    open={openCompleteDialog}
+                    onClose={handleCloseCompleteDialog}
+                    >
+                        <DialogTitle>
+                            Are you sure you want to mark this purchase as completed?
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                This proves that the seller has delivered their work to you.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseCompleteDialog}>No</Button>
+                            <Button onClick={handleMarkAsCompleted}>Yes</Button>
+                        </DialogActions>
+                    </Dialog>
                     <Button variant="outlined">
                         Contact Seller
                     </Button>

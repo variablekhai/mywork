@@ -28,7 +28,7 @@ function Order() {
     // OnClick Events
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
-    }
+    }  
     //
 
     // Firebase
@@ -42,8 +42,7 @@ function Order() {
         const getPendingOrders = onSnapshot(q, (querySnapshot) => {
             const orders = [];
             querySnapshot.forEach((doc) => {
-                orders.push(doc.data());
-                console.log(orders);
+                orders.push({...doc.data(), id: doc.id});
             })
             setUserPendingOrders(orders);
         })
@@ -51,7 +50,7 @@ function Order() {
         const getUserPurchases = onSnapshot(qPurchases, (querySnapshot) => {
             const orders = [];
             querySnapshot.forEach((doc) => {
-                orders.push(doc.data());
+                orders.push({...doc.data(), id: doc.id});
             })
             setUserPurchases(orders);
         })
@@ -142,6 +141,7 @@ function Order() {
                                 date={order?.dateOrderCreated}
                                 status={order?.isCompleted}
                                 requirements={order?.specialRequirements}
+                                orderID={order?.id}
                                 />
                             )
                         })
