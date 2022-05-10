@@ -1,4 +1,4 @@
-import { doc, onSnapshot } from "@firebase/firestore";
+import { collection, doc, getDocs, onSnapshot, query, where } from "@firebase/firestore";
 import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Badge } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
@@ -12,6 +12,7 @@ export const NavBar = () => {
 
     const { user, logOut } = useUserAuth();
     localStorage.setItem("keyid", user.uid);
+
     
     useEffect(() => {
 
@@ -27,7 +28,6 @@ export const NavBar = () => {
         };
 
     }, [])
-
 
     const handleLogOut = async () => {
         try {
@@ -100,7 +100,7 @@ export const NavBar = () => {
                         </Grid>
                         <Grid item>
                             <IconButton sx={{ mr: 1 }} component={Link} to={"/orders/"+user.uid}>
-                                <StyledBadge badgeContent={3}>
+                                <StyledBadge badgeContent={"!"} variant="dot">
                                     <ArticleIcon sx={{ width: 25, height: 25}}/>
                                 </StyledBadge>
                             </IconButton>

@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import { ExpandCircleDown } from "@mui/icons-material";
-import { where, getDocs, query, collection, getDoc, doc } from "@firebase/firestore";
+import { where, getDocs, query, collection, getDoc, doc, onSnapshot } from "@firebase/firestore";
 import { db } from "../firebase";
 import OrderCard from "../components/OrderCard";
 import OrderCompletedCard from "../components/OrderCompletedCard";
@@ -38,18 +38,29 @@ function Order() {
 
     useEffect(() => {
 
-        const getPendingOrders = async() => {
-            const data = await getDocs(q);
-            setUserPendingOrders(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
+
+        const getPendingOrders = onSnapshot(q, (querySnapshot) => {
+            const orders = [];
+            querySnapshot.forEach((doc) => {
+                orders.push(doc.data());
+                console.log(orders);
+            })
+            setUserPendingOrders(orders);
+        })
+
+        const getUserPurchases = onSnapshot(qPurchases, (querySnapshot) => {
+            const orders = [];
+            querySnapshot.forEach((doc) => {
+                orders.push(doc.data());
+            })
+            setUserPurchases(orders);
+        })
+
+        return () => {
+            getPendingOrders();
+            getUserPurchases();
         }
 
-        const getUserPurchases = async() => {
-            const data = await getDocs(qPurchases);
-            setUserPurchases(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
-        }
-
-        getPendingOrders();
-        getUserPurchases();
 
     }, [])
    
@@ -65,9 +76,6 @@ function Order() {
         return value.buyerID == userID;
     }
 
-    useEffect(() => {
-        console.log(serviceData);
-    }, [serviceData])
     //
 
     return (
