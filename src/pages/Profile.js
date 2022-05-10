@@ -1,4 +1,4 @@
-import { Avatar, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from "@mui/material";
 import GradeIcon from '@mui/icons-material/Grade';
 import StarIcon from '@mui/icons-material/Star';
 import { Link, useParams } from "react-router-dom";
@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 import { yellow } from '@mui/material/colors';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot } from "@firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot } from "@firebase/firestore";
 import { db } from "../firebase";
 import { ProductCard } from "../components/ProductCard";
 import { useUserAuth } from "../context/UserAuthContext";
@@ -36,22 +36,30 @@ function Profile({ props }) {
         setOpen(false);
     }
 
+    const isProfileOwner = (value) => {
+        return value.owner == profileOwnerData?.email;
+    }
+
     useEffect(() => {
 
-        const getProfileOwner = async() => {
-            const ownerData = await getDoc(profileOwnerRef);
-            setProfileOwnerData(ownerData.data());
-        }
-      
-        const getServices = async() => {
-            const data = await getDocs(servicesCollectionRef);
-            setServices(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
-        }
-  
-        getServices();
-        getProfileOwner();
+        const getProfileOwner = onSnapshot(profileOwnerRef, (doc) => {
+            setProfileOwnerData(doc.data());
+        })
 
-    },[services])
+        const getServices = onSnapshot(servicesCollectionRef, (querySnapshot) => {
+            const services = [];
+            querySnapshot.forEach((doc) => {
+                services.push(doc.data());
+            })
+            setServices(services);
+        })
+
+        return () => {
+            getProfileOwner();
+            getServices();
+        }
+
+    },[])
 
     useEffect(() => {
 
@@ -70,18 +78,21 @@ function Profile({ props }) {
     const userRating = () => {
 
         let totalRating = 0;
-        services?.forEach((service) => {
+
+        services?.filter(isProfileOwner).forEach((service) => {
             for (let i = 0; i < service.review.length; i++) {
-                totalRating += parseInt(service.review[i].rating)/service.review.length;
+                totalRating += parseInt(service.review[i].rating);
             }
         })
+
         return (totalRating/services?.length).toFixed(1);
+  
     }
 
     const totalUserRating = () => {
 
         let total = 0;
-        services?.forEach((service) => {
+        services?.filter(isProfileOwner).forEach((service) => {
             
             total += service.review.length;
         })

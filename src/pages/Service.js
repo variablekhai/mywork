@@ -139,7 +139,7 @@ function Service() {
                                 {userData.bio}
                             </Typography>
                             <Grid item display="flex" alignItems="center" textAlign="center">
-                                <Rating value={5} size="small" />
+                                <Rating value={5} size="small" readOnly/>
                                 <Typography>
                                     5.0 (11)
                                 </Typography>
