@@ -49,7 +49,7 @@ function Profile({ props }) {
         const getServices = onSnapshot(servicesCollectionRef, (querySnapshot) => {
             const services = [];
             querySnapshot.forEach((doc) => {
-                services.push(doc.data());
+                services.push({...doc.data(), id: doc.id});
             })
             setServices(services);
         })

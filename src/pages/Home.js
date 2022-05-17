@@ -14,6 +14,8 @@ function Home() {
   const { user } = useUserAuth();
   const [anchorElCat, setAnchorElCat] = useState(null)
 
+  const [categoriesSearch, setCategoriesSearch] = useState(0);
+
   const [services, setServices] = useState([]);
   const servicesCollectionRef = collection(db, "services");
 
@@ -35,10 +37,10 @@ function Home() {
     setAnchorElCat(event.currentTarget);
   }
 
-  const handleCloseCatMenu = () => {
+  const handleCloseCatMenu = (e) => {
+    setCategoriesSearch(e.target.value);
     setAnchorElCat(null);
   }
-
 
   return (
     <>
@@ -112,13 +114,14 @@ function Home() {
           open={Boolean(anchorElCat)}
           onClose={handleCloseCatMenu}
           >
-              <MenuItem onClick={handleCloseCatMenu}>Graphics & Design</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Digital Marketing</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Writing & Translation</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Video & Animation</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Music & Audio</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Programming & Tech</MenuItem>
-              <MenuItem onClick={handleCloseCatMenu}>Business</MenuItem>
+              <MenuItem value={0} onClick={handleCloseCatMenu}>All</MenuItem>
+              <MenuItem value={1} onClick={handleCloseCatMenu}>Graphics & Design</MenuItem>
+              <MenuItem value={2} onClick={handleCloseCatMenu}>Digital Marketing</MenuItem>
+              <MenuItem value={3} onClick={handleCloseCatMenu}>Writing & Translation</MenuItem>
+              <MenuItem value={4} onClick={handleCloseCatMenu}>Video & Animation</MenuItem>
+              <MenuItem value={5} onClick={handleCloseCatMenu}>Music & Audio</MenuItem>
+              <MenuItem value={6} onClick={handleCloseCatMenu}>Programming & Tech</MenuItem>
+              <MenuItem value={7} onClick={handleCloseCatMenu}>Business</MenuItem>
           </Menu>
         </Grid>
       </Grid>
@@ -131,7 +134,13 @@ function Home() {
         mx: '5%'
       }}
       >
-        {services.map((service) => {
+        {services.filter((service) => {
+          if (categoriesSearch == 0) {
+            return service
+          } else {
+            return service.category == categoriesSearch
+          }
+        }).map((service) => {
 
           const calc = () => {
             let amount = 0;
