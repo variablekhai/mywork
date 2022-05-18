@@ -1,17 +1,63 @@
-import { doc, getDoc } from "@firebase/firestore";
-import { Typography, Grid, Paper, CardMedia, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { arrayUnion, doc, getDoc, updateDoc } from "@firebase/firestore";
+import { Alert, Typography, Grid, Paper, CardMedia, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Rating, TextField, Snackbar } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import pluralize from "pluralize";
+import { useUserAuth } from "../context/UserAuthContext";
+import DoneIcon from '@mui/icons-material/Done';
 
 export default function CompletedPurchaseCard(props) {
 
+    const { user } = useUserAuth();
+
     const [serviceData, setServiceData] = useState({});
     const [sellerData, setSellerData] = useState({});
+    const [isRated, setIsRated] = useState(false);
 
     const serviceID = props.serviceID;
     const sellerID = props.sellerID;
+
+    const [rateOpen, setRateOpen] = useState(false);
+    const [snackOpen, setSnackOpen] = useState(false);
+
+    const handleOpenRateDialog = () => {
+        setRateOpen(true);
+    }
+
+    const handleCloseRateDialog = () => {
+        setRateOpen(false);
+    }
+
+    const handleSnackClose = () => {
+        setSnackOpen(false);
+    }
+
+    const [ratingValue, setRatingValue] = useState(0);
+    const [feedbackValue, setFeedbackValue] = useState("");
+
+    const handleRatingChange = (e) => {
+        setRatingValue(e.target.value);
+    }
+
+    const handleFeedbackChange = (e) => {
+        setFeedbackValue(e.target.value)
+    }
+
+    const handleSubmitRate = async() => {
+
+        let review = {userID: user.uid, rating: ratingValue, feedbackValue: feedbackValue}
+
+        await updateDoc(doc(db, "services", serviceID), {
+            review: arrayUnion(review)
+        }).then(() => {
+            setSnackOpen(true)
+            setIsRated(true)
+        }
+        )
+
+        setRateOpen(false);
+    }
 
     useEffect(() => {
 
@@ -35,6 +81,10 @@ export default function CompletedPurchaseCard(props) {
     const handleCloseDialog = () => {
         setOpen(false)
     }
+
+    useEffect(() => {
+        console.log(isRated);
+    }, [isRated])
 
     return (
         <Paper
@@ -105,9 +155,51 @@ export default function CompletedPurchaseCard(props) {
                 </Dialog>
                 </Grid>
                 <Grid container item direction="column" md={2} gap={1}>
-                    <Button variant="contained" sx={{ color: "#fff" }}>
-                        Rate the work
-                    </Button>
+                    {isRated == true ?
+                        <Button variant="outlined">
+                        Rated <DoneIcon sx={{ ml: 0.5, width: 18, height: 18 }}/>
+                        </Button>   
+                     :  
+                        <Button onClick={handleOpenRateDialog} variant="contained" sx={{ color: "#fff" }}>
+                        Rate this work
+                        </Button>
+                    }
+                    
+                    <Dialog
+                    open={rateOpen}
+                    onClose={handleCloseRateDialog}
+                    fullWidth
+                    >
+                        <DialogTitle>
+                            Rate this work
+                        </DialogTitle>
+                        <DialogContent>
+                            <Rating 
+                            onChange={handleRatingChange}                            
+                            /><br></br>
+                            <TextField
+                            variant="standard"
+                            label="Feedback"
+                            multiline
+                            rows={2}
+                            fullWidth
+                            onChange={handleFeedbackChange}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseRateDialog}>Cancel</Button>
+                            <Button onClick={handleSubmitRate}>Rate</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Snackbar 
+                    open={snackOpen}
+                    autoHideDuration={6000}
+                    onClose={handleSnackClose}
+                    >
+                        <Alert severity="success" onClose={handleSnackClose} sx={{width: "100%"}}>
+                            Thank you for your feedback!
+                        </Alert>
+                    </Snackbar>
                 </Grid>
             </Grid>
         </Paper>

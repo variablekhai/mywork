@@ -48,16 +48,6 @@ function Search() {
     const handleSearchBar = (e) => {
         setSearchTerm(e.target.value);
     }
-
-    //Test Cases
-    useEffect(() => {
-        console.log("too much read");
-    }, [services, searchTerm])
-
-
-    useEffect(() => {
-        console.log(numOfServices);
-    }, [numOfServices])
     
     return (
         <>
