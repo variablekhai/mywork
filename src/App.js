@@ -16,6 +16,7 @@ import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import Order from './pages/Order';
 import Search from './pages/Search';
+import Chats from './pages/Chats';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
             textTransform: 'none'
         }
     }
+    
 })
 
   return (
@@ -58,6 +60,7 @@ function App() {
           <Route path='/checkout/:serviceID/for/:userID/:sellerID' element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
           <Route path='/checkout/success' element={<ProtectedRoute><OrderSuccess/></ProtectedRoute>}></Route>
           <Route path='/orders/:userID' element={<ProtectedRoute><Order/></ProtectedRoute>}></Route>
+          <Route path='/chats/:userID' element={<ProtectedRoute><Chats/></ProtectedRoute>}></Route>
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

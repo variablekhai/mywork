@@ -39,3 +39,31 @@
     transform: rotate(360deg);
   }
 }
+
+
+.friend {
+  background-color: #00D449 !important;
+  max-width: 50%;
+}
+
+.me {
+  background-color: #1578F1 !important;
+  max-width: 50%;
+}
+
+.form-container {
+  border-color: #6666 !important;
+}
+
+.chat-wrapper{
+  display: flex;
+}
+
+.chat-wrapper.own {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.selected-user {
+  background-color: #6666 !important;
+}

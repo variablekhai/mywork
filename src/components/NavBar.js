@@ -6,6 +6,7 @@ import { ReactComponent as Logo } from '../assets/logo.svg'
 import { useUserAuth } from "../context/UserAuthContext";
 import { db } from "../firebase";
 import ArticleIcon from '@mui/icons-material/Article';
+import ForumIcon from '@mui/icons-material/Forum';
 import styled from "@emotion/styled";
 
 export const NavBar = () => {
@@ -99,6 +100,11 @@ export const NavBar = () => {
                             </Grid>
                         </Grid>
                         <Grid item>
+                            <IconButton sx={{ mr: 0.5 }} component={Link} to={"/chats/"+user.uid}>
+                                <StyledBadge variant="dot">
+                                    <ForumIcon sx={{ width: 25, height: 25}}/>
+                                </StyledBadge>
+                            </IconButton>
                             <IconButton sx={{ mr: 1 }} component={Link} to={"/orders/"+user.uid}>
                                 <StyledBadge badgeContent={"!"} variant="dot">
                                     <ArticleIcon sx={{ width: 25, height: 25}}/>
