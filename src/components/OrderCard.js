@@ -105,10 +105,10 @@ export default function OrderCard(props) {
                 </Dialog>
                 </Grid>
                 <Grid container item direction="column" md={2} gap={1}>
-                    <Button variant="contained" sx={{ color: "#fff" }}>
+                    <Button variant="contained" sx={{ color: "#fff" }} href={"/chats/" + props.userID}>
                         Deliver your work
                     </Button>
-                    <Button variant="outlined">
+                    <Button variant="outlined" href={"/chats/" + props.userID}>
                         Contact buyer
                     </Button>
                 </Grid>

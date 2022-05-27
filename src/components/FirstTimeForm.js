@@ -22,7 +22,8 @@ export default function FirstTimeForm() {
 
     const updateData = async (name) => {
         await updateDoc(doc(db, "users", user.uid), {
-            userName: name
+            userName: name,
+            isNewUser: false
         });
     }
 

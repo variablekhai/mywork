@@ -7,11 +7,14 @@ import { Grid, Hidden, IconButton, Menu, MenuItem, Paper, Skeleton, Stack, Typog
 import Carousel from "react-material-ui-carousel";
 import HelloCard from "../components/HelloCard";
 import { getDoc, doc, collection, getDocs, query, where } from '@firebase/firestore';
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
+import FirstTimeForm from "../components/FirstTimeForm";
+import { AuthCredential, getAdditionalUserInfo } from "firebase/auth";
 
 function Home() {
 
   const { user } = useUserAuth();
+  const [userData, setUserData] = useState("");
   const [anchorElCat, setAnchorElCat] = useState(null)
 
   const [categoriesSearch, setCategoriesSearch] = useState(0);
@@ -21,17 +24,21 @@ function Home() {
 
   useEffect(() => {
       
+      const getUser = async() => {
+        const userData = await getDoc(doc(db, "users", user.uid));
+        setUserData(userData.data());
+      }
+
       const getServices = async() => {
           const data = await getDocs(servicesCollectionRef);
           setServices(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
       }
 
       getServices();
+      getUser();
 
       localStorage.setItem("keyid", user.uid);
   },[])
-
-  
 
   const handleOpenCatMenu = (event) => {
     setAnchorElCat(event.currentTarget);
@@ -44,6 +51,7 @@ function Home() {
 
   return (
     <>
+    {userData?.isNewUser === true ? <FirstTimeForm /> : null}
     <NavBar />
     <Grid
     container

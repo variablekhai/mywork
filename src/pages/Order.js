@@ -111,6 +111,7 @@ function Order() {
                                 date={order?.dateOrderCreated}
                                 status={order?.isCompleted}
                                 requirements={order?.specialRequirements}
+                                userID={userID}
                                 />
                             )
                         })}
@@ -142,6 +143,7 @@ function Order() {
                                 status={order?.isCompleted}
                                 requirements={order?.specialRequirements}
                                 orderID={order?.id}
+                                userID={userID}
                                 />
                             )
                         })

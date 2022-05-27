@@ -9,7 +9,7 @@ import {
     getAdditionalUserInfo
 } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { setDoc, doc, collection, getDoc} from "@firebase/firestore";
+import { setDoc, doc } from "@firebase/firestore";
 
 const userAuthContext = createContext();
 
@@ -25,7 +25,8 @@ export function UserAuthContextProvider({ children }) {
                 photoURL: "",
                 phoneNo: "",
                 bio: "",
-                skills: []
+                skills: [],
+                isNewUser: true
             })
         });
 
@@ -49,7 +50,8 @@ export function UserAuthContextProvider({ children }) {
                     photoURL: "",
                     phoneNo: "",
                     bio: "",
-                    skills: []
+                    skills: [],
+                    isNewUser: true
                 })
             }
         })

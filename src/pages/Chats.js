@@ -13,7 +13,7 @@ import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 export const Chats = () => {
 
-    const { userID } = useParams();
+    const { userID, targetUser } = useParams();
     const [users, setUsers] = useState([]);
     const [chat, setChat] = useState("");
     const [text, setText] = useState("");

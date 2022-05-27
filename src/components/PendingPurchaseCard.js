@@ -143,7 +143,7 @@ export default function PendingPurchaseCard(props) {
                             <Button onClick={handleMarkAsCompleted}>Yes</Button>
                         </DialogActions>
                     </Dialog>
-                    <Button variant="outlined">
+                    <Button variant="outlined" href={/chats/+props.userID}>
                         Contact Seller
                     </Button>
                 </Grid>
