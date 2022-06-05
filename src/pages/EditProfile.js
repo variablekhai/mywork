@@ -10,10 +10,12 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { collection, doc, getDoc, updateDoc, onSnapshot, setDoc } from "@firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useParams } from "react-router-dom";
 
 
 function EditProfile() {
 
+    const { userID } = useParams();
     const { user } = useUserAuth();
     const [userData, setUserData] = useState({});
     localStorage.setItem("keyid", user.uid);
@@ -31,7 +33,7 @@ function EditProfile() {
     useEffect(() => {
 
         const unsub = onSnapshot(
-            doc(db, "users", localStorage.keyid),
+            doc(db, "users", userID),
             (userSnap) => {
                 setUserData(userSnap.data())
             }
@@ -242,7 +244,19 @@ function EditProfile() {
                                 </ListItem>
                             ))}
                         </List>
-                        <TextField 
+                        {skills?.length >= 3 ?
+                        <TextField
+                        size="small"
+                        label="Skill"
+                        fullWidth
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        InputProps={{
+                          endAdornment: <IconButton disabled edge="end" color="primary" onClick={handleAddSkill}><AddCircleIcon /></IconButton>
+                        }}
+                        helperText="You may only add 3 skills. (Be sure to save)"
+                        />
+                        :
+                        <TextField
                         size="small"
                         label="Skill"
                         fullWidth
@@ -252,6 +266,7 @@ function EditProfile() {
                         }}
                         helperText="You may only add 3 skills. (Be sure to save)"
                         />
+                        }      
                         <Button 
                         variant="contained" 
                         onClick={handleUpdateAccount}

@@ -144,7 +144,7 @@ function Service() {
                                     5.0 (11)
                                 </Typography>
                             </Grid>
-                            <Button variant="outlined">
+                            <Button variant="outlined" href={"/chats/"+user.uid}>
                                 Contact Me
                             </Button>
                         </Grid>
@@ -157,7 +157,7 @@ function Service() {
                         </Typography>
                         <List>
                             {userData?.skills?.map((skill) => (
-                                <ListItem>
+                                <ListItem key={skill}>
                                     <ListItemIcon>
                                         <GradeIcon sx={{ color: yellow[700]}}/>
                                     </ListItemIcon>
@@ -200,6 +200,7 @@ function Service() {
                                     </ListItemText>
                                 </ListItem>
                             </List>
+                            {user.uid != userData.id ? 
                             <Button
                             component={Link} 
                             variant="contained" 
@@ -209,7 +210,17 @@ function Service() {
                             >
                                 Continue (RM{serviceData.price})
                             </Button>
-                            <Button variant="outlined">
+                            :
+                            <Button
+                            variant="contained" 
+                            fullWidth 
+                            sx={{ color: "#fff" }}
+                            disabled
+                            >
+                                Can't purchase your own service, aye?
+                            </Button>
+                            }
+                            <Button variant="outlined" href={"/chats/"+user.uid}>
                                 Contact Seller
                             </Button>
                         </Grid>

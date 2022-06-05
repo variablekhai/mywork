@@ -25,7 +25,9 @@ function Profile({ props }) {
     const servicesCollectionRef = collection(db, "services");
 
     const handleDelete = async(id) => {
-        await deleteDoc(doc(db, "services", id));
+        await deleteDoc(doc(db, "services", id)).then(
+            setOpen(false)
+        );
     }
 
     const handleOpenDialog = () => {
@@ -141,7 +143,7 @@ function Profile({ props }) {
                             {user.uid === userID && 
                             <IconButton
                             component={Link}
-                            to="/editprofile"
+                            to={"/editprofile/"+user.uid}
                             >
                                 <EditIcon
                                 sx={{
@@ -307,7 +309,7 @@ function Profile({ props }) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleCloseDialog}>No</Button>
-                                <Button onClick={() => handleDelete(service.id)} autoFocus>
+                                <Button onClick={() => handleDelete(service.id)}>
                                     Yes
                                 </Button>
                             </DialogActions>

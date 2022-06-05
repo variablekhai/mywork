@@ -52,7 +52,7 @@ function App() {
           <Route path='/register' element={<Register />}/>
           <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path='/profile/:userID' element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
-          <Route path='/editprofile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path='/editprofile/:userID' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
           <Route path='/editservices/:serviceID' element={<ProtectedRoute><EditServices /></ProtectedRoute>} />
           <Route path='/service/:serviceID' element={<ProtectedRoute><Service /></ProtectedRoute>} />
