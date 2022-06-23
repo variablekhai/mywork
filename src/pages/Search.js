@@ -8,8 +8,11 @@ import { collection, getDocs } from "@firebase/firestore";
 import { db } from "../firebase";
 import { ProductCard } from "../components/ProductCard";
 import pluralize from "pluralize";
+import { useParams } from "react-router-dom";
 
 function Search() {
+
+    const { onSearch } = useParams();
 
     const [services, setServices] = useState([]);
     const servicesCollectionRef = collection(db, "services");
@@ -35,7 +38,13 @@ function Search() {
     }
 
     useEffect(() => {
-      
+        if(onSearch) {
+            setSearchTerm(onSearch);
+        }
+    }, [])
+
+    useEffect(() => {
+
         const getServices = async() => {
             const data = await getDocs(servicesCollectionRef);
             setServices(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
@@ -48,7 +57,7 @@ function Search() {
     const handleSearchBar = (e) => {
         setSearchTerm(e.target.value);
     }
-    
+
     return (
         <>
         <NavBar />
@@ -99,6 +108,8 @@ function Search() {
                     sx={{ borderRadius: 7, width: 350, mb: 5 }}
                     size="small"
                     onChange={handleSearchBar}
+                    value={searchTerm}
+                    
                     />
                 </Grid>
                 <Grid item sx={{ mb: 3 }}>

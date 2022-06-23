@@ -17,6 +17,7 @@ import OrderSuccess from './pages/OrderSuccess';
 import Order from './pages/Order';
 import Search from './pages/Search';
 import Chats from './pages/Chats';
+import { Admin } from './pages/Admin';
 
 function App() {
 
@@ -56,11 +57,13 @@ function App() {
           <Route path='/addservices' element={<ProtectedRoute><AddServices /></ProtectedRoute>} />
           <Route path='/editservices/:serviceID' element={<ProtectedRoute><EditServices /></ProtectedRoute>} />
           <Route path='/service/:serviceID' element={<ProtectedRoute><Service /></ProtectedRoute>} />
+          <Route path='/search/:onSearch' element={<ProtectedRoute><Search /></ProtectedRoute>} />
           <Route path='/search' element={<ProtectedRoute><Search /></ProtectedRoute>} />
           <Route path='/checkout/:serviceID/for/:userID/:sellerID' element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
           <Route path='/checkout/success' element={<ProtectedRoute><OrderSuccess/></ProtectedRoute>}></Route>
           <Route path='/orders/:userID' element={<ProtectedRoute><Order/></ProtectedRoute>}></Route>
           <Route path='/chats/:userID' element={<ProtectedRoute><Chats/></ProtectedRoute>}></Route>
+          <Route path='/admin' element={<ProtectedRoute><Admin /></ProtectedRoute>}/>
         </Routes>
       </UserAuthContextProvider>
     </ThemeProvider>

@@ -52,7 +52,7 @@ function Home() {
   return (
     <>
     {userData?.isNewUser === true ? <FirstTimeForm /> : null}
-    <NavBar />
+    <NavBar/>
     <Grid
     container
     sx={{
@@ -148,7 +148,7 @@ function Home() {
           } else {
             return service.category == categoriesSearch
           }
-        }).map((service) => {
+        }).filter((service) => service.verified == true).map((service) => {
 
           const calc = () => {
             let amount = 0;

@@ -201,7 +201,7 @@ function Checkout() {
                     </Grid>
                     <Grid container item justifyContent="space-between">
                         <Typography display="inline">
-                            Service Tax
+                           Service Tax {`(3%)`}
                         </Typography>
                         <Typography display="inline">
                             RM{calcServiceTax(serviceData)}
@@ -230,7 +230,7 @@ function Checkout() {
                     fullWidth
                     onClick={() => handlePlaceOrder()}
                     >
-                        Place order
+                        Place order {`&`} Pay
                     </Button>
                 </Card>
             </Grid>

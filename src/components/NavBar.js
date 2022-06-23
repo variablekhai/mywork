@@ -1,20 +1,26 @@
 import { collection, doc, getDocs, onSnapshot, query, where } from "@firebase/firestore";
-import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Badge } from "@mui/material"
+import { AppBar, Toolbar, Box, Button, Tooltip, Avatar, Grid, IconButton, Menu, MenuItem, Badge, TextField, OutlinedInput, InputAdornment } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from '../assets/logo.svg'
 import { useUserAuth } from "../context/UserAuthContext";
 import { db } from "../firebase";
 import ArticleIcon from '@mui/icons-material/Article';
 import ForumIcon from '@mui/icons-material/Forum';
 import styled from "@emotion/styled";
+import SearchIcon from '@mui/icons-material/Search';
+import Search from "../pages/Search";
+import { Navigation } from "@mui/icons-material";
 
-export const NavBar = () => {
+export const NavBar = ({ userID }) => {
 
     const { user, logOut } = useUserAuth();
+    const [searchInput, setSearchInput] = useState("");
+
+    const navigate = useNavigate();
+
     localStorage.setItem("keyid", user.uid);
 
-    
     useEffect(() => {
 
         const unsub = onSnapshot(
@@ -38,7 +44,6 @@ export const NavBar = () => {
         }
     }
 
-
     const [anchorElUser, setAnchorElUser] = useState(null);
     
     const handleOpenUserMenu = (event)  => {
@@ -56,6 +61,13 @@ export const NavBar = () => {
         }
       });
 
+
+    const handleKeyEnter = (e) => {
+        if (e.keyCode == 13) {
+            navigate('/search/'+searchInput);
+        }
+    }
+    
     return (
         <AppBar
             color="transparent"
@@ -79,6 +91,22 @@ export const NavBar = () => {
                             item
                             display={{ md: 'block', xs: 'none' }}
                             >
+                                    <OutlinedInput 
+                                    size="small"
+                                    sx={{
+                                        borderRadius: 5,
+                                        mr: 4
+                                    }}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton component={Link} to={"/search/"+ searchInput}>
+                                                <SearchIcon sx={{ color: "#39B54A" }}/>
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onKeyDown={(e) => handleKeyEnter(e)}
+                                    />
                                     <Button
                                     href="/search"
                                     sx={{
@@ -112,7 +140,7 @@ export const NavBar = () => {
                             </IconButton>
                             <Tooltip title="Profile">
                                 <IconButton onClick={handleOpenUserMenu}>
-                                    <Avatar src={localStorage.picture}/>
+                                    <Avatar src={localStorage.getItem("picture")}/>
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -123,7 +151,8 @@ export const NavBar = () => {
                             onClose={handleCloseUserMenu}
                             >
                                 <MenuItem component={Link} to={"/profile/"+user.uid}>Profile</MenuItem>
-                                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+                                {user.uid == 'e206yZbUWHUUHDlIYBrSZ0vVREl2' ? <MenuItem component={Link} to={'/admin'}>Admin Dashboard</MenuItem> : null}
+                                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>  
                             </Menu>
                         </Grid>
                     </Grid>
